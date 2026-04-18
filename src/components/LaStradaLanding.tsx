@@ -30,6 +30,7 @@ export function LaStradaLanding() {
         alt=""
         fill
         priority
+        unoptimized
         className="object-cover object-bottom pointer-events-none select-none"
         sizes="100vw"
       />
@@ -43,7 +44,7 @@ export function LaStradaLanding() {
       </p>
 
       <div className="relative z-10 flex flex-col items-center justify-start px-6 pt-10 text-center">
-               <h1
+        <h1
           className="max-w-sm text-[2.125rem] font-extrabold leading-[1.1] tracking-wide text-white sm:max-w-md sm:text-5xl sm:leading-[1.08]"
           style={{ fontFamily: "var(--font-playfair), serif" }}
         >
