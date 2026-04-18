@@ -24,3 +24,22 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@keyframes la-strada-shimmer {
+  0% {
+    transform: translateX(-120%) skewX(-12deg);
+  }
+  35% {
+    transform: translateX(-120%) skewX(-12deg);
+  }
+  60% {
+    transform: translateX(120%) skewX(-12deg);
+  }
+  100% {
+    transform: translateX(120%) skewX(-12deg);
+  }
+}
+
+.la-strada-cta-shimmer {
+  animation: la-strada-shimmer 3s ease-in-out infinite;
+}
