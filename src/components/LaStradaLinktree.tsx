@@ -1,14 +1,25 @@
 "use client";
 
+import type { MouseEvent } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { ArrowRight, MessageCircle, UtensilsCrossed } from "lucide-react";
+import {
+  ArrowRight,
+  MessageCircle,
+  ShoppingBag,
+  UtensilsCrossed,
+} from "lucide-react";
 
 const CARDAPIO_URL =
   "https://app.cardapioweb.com/la_strada_pizzaria_e_massas";
 
 const WHATSAPP_COMMUNITY_URL =
   "https://chat.whatsapp.com/KQaB3fl3pLhCg2XNZsSTAX?mode=gi_t";
+
+const IFOOD_URL =
+  "https://www.ifood.com.br/delivery/lauro-de-freitas-ba/pizzaria--massas-la-strada-buraquinho/196b760b-98b1-4fd7-9a18-e719d09a9bcb";
+
+const IFOOD_MERCHANT_ID = "196b760b-98b1-4fd7-9a18-e719d09a9bcb";
 
 declare global {
   interface Window {
@@ -25,6 +36,39 @@ function trackCardapioClick() {
 function trackWhatsappClick() {
   if (typeof window !== "undefined" && window.fbq) {
     window.fbq("track", "Contact");
+  }
+}
+
+// Navegadores embutidos (Instagram etc.) nao resolvem universal links, entao
+// tentamos abrir o app do iFood direto e caimos no site se o app nao abrir.
+function openIfood(event: MouseEvent<HTMLAnchorElement>) {
+  if (typeof window !== "undefined" && window.fbq) {
+    window.fbq("trackCustom", "IfoodClick");
+  }
+
+  const ua = navigator.userAgent;
+
+  if (/Android/i.test(ua)) {
+    event.preventDefault();
+    window.location.href = `intent://restaurant/${IFOOD_MERCHANT_ID}#Intent;scheme=ifood;package=br.com.brainweb.ifood;S.browser_fallback_url=${encodeURIComponent(IFOOD_URL)};end`;
+    return;
+  }
+
+  if (/iPhone|iPad|iPod/i.test(ua)) {
+    event.preventDefault();
+    const fallback = window.setTimeout(() => {
+      window.location.href = IFOOD_URL;
+    }, 1200);
+    const cancelFallback = () => window.clearTimeout(fallback);
+    window.addEventListener("pagehide", cancelFallback, { once: true });
+    document.addEventListener(
+      "visibilitychange",
+      () => {
+        if (document.hidden) cancelFallback();
+      },
+      { once: true },
+    );
+    window.location.href = `ifood://restaurant/${IFOOD_MERCHANT_ID}`;
   }
 }
 
@@ -129,6 +173,22 @@ export function LaStradaLinktree() {
               fillOpacity={0.15}
             />
             <span>Entrar na Comunidade do WhatsApp</span>
+          </motion.a>
+
+          <motion.a
+            href={IFOOD_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={openIfood}
+            className="flex w-full items-center justify-center gap-3 rounded-2xl border-2 border-red-500/70 bg-zinc-900/70 px-6 py-5 text-sm font-black uppercase tracking-wide text-white backdrop-blur-sm sm:text-base"
+            whileHover={{ scale: 1.03, borderColor: "rgba(239,68,68,1)" }}
+            whileTap={{ scale: 0.97 }}
+          >
+            <ShoppingBag
+              className="size-5 shrink-0 text-red-500"
+              strokeWidth={2.5}
+            />
+            <span>Pedir no iFood</span>
           </motion.a>
         </nav>
 
